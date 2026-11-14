@@ -147,3 +147,15 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Integration monitor
+dist/
+web/node_modules/
+web/dist/
+*.db
+*.db-wal
+*.db-shm
+desktop/node_modules/
+desktop/runtime/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/

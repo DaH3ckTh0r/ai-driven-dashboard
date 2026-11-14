@@ -1,0 +1,8 @@
+# Groups bring monitors together, possibly from several integrations.
+# Each member is "integration-id/monitor-id". Every member must exist, or validation fails.
+groups:
+  - id: checkout
+    name: Checkout
+    owner: payments
+    description: Everything a customer touches between cart and order confirmation.
+    monitors: [orders-api/orders-down, orders-api/orders-5xx-spike]

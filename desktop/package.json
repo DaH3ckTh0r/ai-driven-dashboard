@@ -1,0 +1,13 @@
+{
+  "name": "integration-monitor-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "runtime": "node ../scripts/prepare-desktop.mjs",
+    "build": "npm run runtime && tauri build",
+    "dev": "npm run runtime && tauri dev"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "identifier": "default",
+  "description": "The splash and settings windows (local pages). The monitor UI is remote, served by the local server, and gets no Tauri IPC.",
+  "windows": [
+    "splash",
+    "settings"
+  ],
+  "permissions": [
+    "core:default"
+  ]
+}

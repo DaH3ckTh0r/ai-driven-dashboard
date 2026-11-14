@@ -1,0 +1,77 @@
+# Example integration. Adding a new integration = adding a file like this one.
+id: orders-api
+name: Orders API
+owner: integrations-team
+description: Public orders endpoint, its Service Bus queue and downstream billing feed.
+
+signals:
+  - id: orders-5xx
+    type: log-analytics
+    workspaceId: ${LA_WORKSPACE_ID}
+    windowMinutes: 5
+    intervalSec: 300
+    kql: |
+      ApiManagementGatewayLogs
+      | where ApiId == "orders"
+      | summarize total = count(), serverErrors = countif(ResponseCode >= 500)
+
+  - id: orders-health
+    type: http-health
+    url: https://orders.example.com/health
+    expectStatus: [200]
+    timeoutMs: 3000
+    intervalSec: 60
+
+  - id: orders-dlq
+    type: service-bus
+    namespace: ${SB_NAMESPACE}
+    queueName: orders-inbound
+    intervalSec: 120
+
+actions:
+  - id: reprocess-dlq
+    description: Resubmit dead-lettered order messages after the root cause is fixed.
+    risk: write
+    script: scripts/reprocess-dlq.ts
+    requiresConfirmation: true
+    timeoutSec: 300
+
+  - id: fetch-failed-sample
+    description: Read a sample of failed requests for diagnosis. No changes made.
+    risk: read
+    script: scripts/fetch-failed-sample.ts
+
+monitors:
+  - id: orders-5xx-spike
+    name: Orders 5xx spike
+    signal: orders-5xx
+    metric: serverErrors
+    operator: gt
+    threshold: 50
+    severity: high
+    tags: [orders, api]
+    agent:
+      maxSteps: 8
+      actions: [fetch-failed-sample, reprocess-dlq]
+
+  - id: orders-down
+    name: Orders health check failing
+    signal: orders-health
+    metric: healthy
+    operator: eq
+    threshold: 0
+    severity: critical
+    tags: [orders, api, critical-path]
+    agent:
+      actions: [fetch-failed-sample]
+
+  - id: orders-dlq-backlog
+    name: Orders dead-letter backlog
+    signal: orders-dlq
+    metric: deadLetter
+    operator: gt
+    threshold: 0
+    severity: medium
+    tags: [orders, queues]
+    agent:
+      actions: [fetch-failed-sample, reprocess-dlq]

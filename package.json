@@ -1,0 +1,36 @@
+{
+  "name": "integration-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main/serve.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "validate": "tsx src/main/validate.ts",
+    "serve": "tsx src/main/serve.ts",
+    "build:web": "npm --prefix web run build",
+    "build:all": "npm run build && npm run build:web",
+    "bdd": "node --import tsx node_modules/@cucumber/cucumber/bin/cucumber-js",
+    "check": "npm run typecheck && npm test && npm run bdd",
+    "docker:build": "docker build -t integration-monitor:latest .",
+    "desktop:build": "npm run build:all && npm --prefix desktop run build",
+    "e2e": "node test/e2e/entra-flow.mjs"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.14.1",
+    "@azure/monitor-query": "^1.3.3",
+    "@azure/service-bus": "^7.10.0",
+    "@azure/storage-queue": "^12.32.0",
+    "jose": "^6.2.17",
+    "tsx": "^4.23.15",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
