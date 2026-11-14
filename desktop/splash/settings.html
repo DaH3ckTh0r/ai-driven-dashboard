@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <style>
+      body { margin: 0; padding: 20px 24px; font-family: system-ui, sans-serif; background: #f6f7f9; color: #1d2330; font-size: 14px; }
+      h1 { font-size: 18px; margin: 0 0 4px; }
+      p.hint { margin: 0 0 16px; color: #5b6475; }
+      .banner { padding: 10px 12px; border-radius: 6px; background: #fde8e8; color: #8a1f1f; margin-bottom: 16px; white-space: pre-wrap; }
+      .notice { padding: 10px 12px; border-radius: 6px; background: #e6f4ea; color: #1e5b2e; margin-bottom: 16px; display: none; }
+      form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; margin-bottom: 20px; }
+      label { display: grid; gap: 4px; font-size: 12px; color: #5b6475; }
+      label.check { display: flex; align-items: center; gap: 6px; grid-column: span 1; }
+      input[type=text], input[type=password] { padding: 6px 8px; border: 1px solid #c9ced8; border-radius: 4px; font: inherit; }
+      button { padding: 6px 12px; border: 1px solid #c9ced8; border-radius: 4px; background: #fff; font: inherit; cursor: pointer; }
+      button.primary { background: #1f5fbf; border-color: #1f5fbf; color: #fff; }
+      button:disabled { opacity: .5; cursor: default; }
+      table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e1e5ec; }
+      th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e1e5ec; vertical-align: top; }
+      th { font-size: 12px; color: #5b6475; font-weight: 600; }
+      td.value { font-family: ui-monospace, monospace; word-break: break-all; }
+      .tag { font-size: 11px; padding: 1px 6px; border-radius: 10px; background: #e7ecf5; color: #36415a; }
+      .tag.missing { background: #fde8e8; color: #8a1f1f; }
+      .actions { display: flex; gap: 6px; }
+      .footer { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+      .empty { color: #5b6475; padding: 12px 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Settings</h1>
+    <p class="hint">Plain values are saved in settings.env. Secrets are saved in your operating system's keychain. Each change restarts the monitor server with the new settings.</p>
+
+    <div id="error" class="banner" hidden></div>
+    <div id="saved" class="notice"></div>
+
+    <form id="form">
+      <label>Name
+        <input id="name" type="text" placeholder="APIM_CHAT_URL" autocomplete="off" required />
+      </label>
+      <label>Value
+        <input id="value" type="text" autocomplete="off" />
+      </label>
+      <div class="actions">
+        <button class="primary" type="submit">Save</button>
+        <button type="button" id="clear">New</button>
+      </div>
+      <label class="check"><input id="secret" type="checkbox" /> Secret (keychain)</label>
+      <span id="secretHint" class="hint" style="grid-column: span 2"></span>
+    </form>
+
+    <table>
+      <thead><tr><th>Name</th><th>Value</th><th>Type</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p id="empty" class="empty" hidden>No settings yet. Add the values the server needs, such as APIM_CHAT_URL.</p>
+
+
+    <script src="settings.js"></script>
+  </body>
+</html>
